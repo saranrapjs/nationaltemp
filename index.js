@@ -1,3 +1,4 @@
+process.chdir(__dirname); // for cron
 var glob = require("glob"),
 	fs = require('fs'),
 	request = require('request'),
