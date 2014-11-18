@@ -1,0 +1,17 @@
+body {
+	margin:25px 50px 0;
+}
+#weather-map {
+	max-width: 800px;
+}
+#map {
+	height:300px;
+	width:500px;
+}
+p {
+	max-width: 800px;
+	font-size: 20px;
+}
+h1, h2 {
+	margin:0;
+}

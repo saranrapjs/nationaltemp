@@ -1,0 +1,22 @@
+{
+  "name": "nationaltemp",
+  "version": "1.0.0",
+  "description": "Set of scripts used for generating averaged national weather conditions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Sisson",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^0.9.0",
+    "geojson": "^0.2.0",
+    "geolib": "^2.0.14",
+    "glob": "^4.0.6",
+    "gramophone": "0.0.3",
+    "pos": "^0.1.7",
+    "request": "^2.48.0",
+    "unzip": "^0.1.11",
+    "xml2js": "^0.4.4"
+  }
+}

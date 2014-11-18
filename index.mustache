@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title>National Temperature</title>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<link rel="stylesheet" href="style.css">
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	</head>
+	<body>
+		<h1>National Temperature: <span style="color:{{color}};">{{temp}} &deg; F</span></h1>
+		<h1>National Conditions: {{forecast}}</h1>
+		<p>Last updated: {{now}}</p>
+		<img src="wxmap_legendimage.png" alt="">
+		<img id="weather-map" src="current.svg" alt="">
+		<hr>
+		<p>This page is generated once an hour, and collates data from {{num_stations}} NOAA observation stations to create an average national temperature.</p>
+		<p>As a fan of <a href="http://weather.gov">weather.gov</a>, I was tickled see the following graphic on their website:</p>
+		<p><img src="./images/screenshot.png" alt=""></p>
+		<p>I immediately misunderstood this to point towards the idea of a "National Temperature", in the same sense as the national anthem ("The Star Spangled Banner"), national bird ("eagle"), or national floral emblem ("rose").  I didn't find anything on the internet showing what the national temperature might be, so I decided to create an auto-generated page that would list the current national temperature.  This is that page.</p>
+		<p>Here is a map of the stations used to generate the national temperature:</p>
+		<div id="map"></div>
+		<p>Included are the <a href="http://en.wikipedia.org/wiki/Territories_of_the_United_States">Territories of the United States</a>.  There are many more points of observation available, but to prevent the National Temperature from overly representing any one region or city, observation stations are chosen which are at least 55 miles away from another observation station.  I also chose to omit stations which don't seem to be located on land.</p>
+		<p>The National Conditions are generated from the top ten currently-observed conditions, re-assembled into a punchy forecast.</p>
+		<p><a href="mailto:jeff@bigboy.us">webmaster: Jeff Sisson</a></p>
+		<script src="stations.json"></script>
+		<script src="temp_to_rgb.js"></script>
+		<script src="map.js"></script>
+	</body>
+</html>
