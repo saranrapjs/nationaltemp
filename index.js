@@ -45,10 +45,10 @@ async.waterfall([
 		async.filter(result, function does_hav_lat(item, cb) { 
 			var good_to_go = (item && item.latitude && item.longitude && item.temp_f && item.station_id && item.observation_time_rfc822 && item.weather) ? true : false,
 				obs_time = new Date(item.observation_time_rfc822);
-			if (item.station_id.indexOf('4') === 0 || item.station_id.indexOf('6') === 0) {
+			if (good_to_go === true && item.station_id.indexOf('4') === 0 || good_to_go === true && item.station_id.indexOf('6') === 0) {
 				good_to_go = false; // probably a buoy?
 			}
-			if (item.latitude === "0" && item.longitude === "0") { // null island
+			if (good_to_go === true && item.latitude === "0" && item.longitude === "0") { // null island
 				good_to_go = false;
 			}
 			if (good_to_go === true && item.location === 'Unknown Station') {
