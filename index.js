@@ -9,8 +9,10 @@ var glob = require("glob"),
 	GeoJSON = require('geojson'),
 	gramophone = require('gramophone'),
 	pos = require('pos'),
+	exec = require('child_process').exec,
 	temp_to_rgb = require('./temp_to_rgb'),
-	do_download = (process.argv[2] && process.argv[2] === 'true') ? true : false
+	do_download = (process.argv[2] && process.argv[2] === 'true') ? true : false,
+	zip_file = __dirname + '/all_xml.zip';
 
 var bad_stations = require('./weird_stations.json');
 
@@ -21,16 +23,25 @@ var stations = [];
 
 async.waterfall([
 	function download_files(callback) {
+		var writeStream = fs.createWriteStream(zip_file)
+			.on('finish', callback)
 		if (do_download !== true) {
-			callback(null, true);
+			callback(null);
 		} else {
 			console.log("DOWNLOADING XML FILES...")
-			request('http://w1.weather.gov/xml/current_obs/all_xml.zip')
-				.pipe(unzip.Extract({ path: 'all_xml' }))
-				.on('finish', function() {
-					callback(null, true);
-				});			
+			request({
+				url:'http://w1.weather.gov/xml/current_obs/all_xml.zip',
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
+				}
+			}).pipe(writeStream)	
 		}
+	},
+	function unzip_em(callback) {
+		console.log('unzipping...')
+		exec('unzip -o ' + zip_file + ' -d all_xml', function() {
+			callback(null, true);
+		});
 	},
 	function find_files(res, callback) {
 		glob("all_xml/*.xml", {}, callback);
