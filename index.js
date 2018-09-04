@@ -2,7 +2,6 @@ process.chdir(__dirname); // for cron
 var glob = require("glob"),
 	fs = require('fs'),
 	request = require('request'),
-	unzip = require('unzip'),
 	async = require('async'),
 	xml2js = require('xml2js'),
 	geolib = require('geolib'),
@@ -71,25 +70,20 @@ async.waterfall([
 			if (good_to_go === true && obs_time < a_few_days_ago) { // not a recent observation
 				good_to_go = false;
 			}
-			cb( good_to_go );
-		}, function(results) {
-			callback(null, results)
-		});
+			cb( null, good_to_go );
+		}, callback);
 	},
 	function filter_too_close(result, callback) {
 		async.filterSeries(result, function too_close(item, cb) { 
-		var good_to_go = true,
-			is_even = evenly_spread(item.latitude, item.longitude);
-		if (is_even[0] === true) {
-			stations.push(item)
-		} else {
-			// console.log("BAD FROM?", item.location, item.station_id, "NEAR", is_even[1].location, is_even[1].station_id)
-			good_to_go = false;
-		}
-		cb(good_to_go);
-		}, function(results) {
-			callback(null, results);
-		});
+			var good_to_go = true,
+				is_even = evenly_spread(item.latitude, item.longitude);
+			if (is_even[0] === true) {
+				stations.push(item)
+			} else {
+				good_to_go = false;
+			}
+			cb(null, good_to_go);
+		}, callback);
 	},
 	function do_average(result, callback) {
 		console.log("CALCULATING AVERAGE...")
@@ -115,7 +109,7 @@ async.waterfall([
 	console.log("NUM STATIONS", stations.length)
 	console.log(info)
 	var geo_j = GeoJSON.parse(stations, {Point: ['latitude', 'longitude'], include: ['location','station_id','temp_f','weather']});
-	fs.writeFile('stations.json', 'var stations = ' + JSON.stringify(geo_j))
+	fs.writeFile('stations.json', 'var stations = ' + JSON.stringify(geo_j), err => err && console.error(err))
 	write_html(info)
 	write_svg(info.color)
 });
@@ -126,12 +120,12 @@ function write_html(data) {
 	for (var i in data) {
 		html = html.replace('{{'+i+'}}', data[i])
 	}
-	fs.writeFile('index.html', html)
+	fs.writeFile('index.html', html, err => err && console.error(err))
 }
 function write_svg(color) {
 	var svg = fs.readFileSync('./us.svg').toString();
 	svg = svg.replace("blue", color);
-	fs.writeFile('current.svg', svg)
+	fs.writeFile('current.svg', svg, err => err && console.error(err))
 }
 
 function randomOne(arr) {
@@ -186,14 +180,14 @@ function evenly_spread(latitude, longitude) {
 			break;
 		}
 	};
-	return [ 
+	return [
 		is_evenly_spread,
 		near_station
 	];
 }
 
 function read_one(path, cb) {
-	async.waterfall([ 
+	async.waterfall([
 		function readfile(callback) {
 			fs.readFile(path, callback);
 		},
